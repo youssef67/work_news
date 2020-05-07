@@ -12,7 +12,11 @@ abstract class NewsManager extends Manager
 
     abstract public function count();
 
-    abstract public function add();
+    abstract public function add(News $news);
+
+    abstract public function modify(News $news);
+
+    abstract public function delete($id);
 
     public function save(News $news)
     {

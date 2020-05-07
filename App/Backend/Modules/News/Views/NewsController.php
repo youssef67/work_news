@@ -67,4 +67,46 @@ class NewsController extends BackController
 
         $this->page->addVar('news', $news);
     }
+
+    public function executeDelete(HTTPRequest $request)
+    {
+        $this->managers->getManagerOf('News')->delete($request->getData(('id')));
+
+        $this->app->user()->setFlash('La news a bien été supprimé');
+
+        $this->app->httpResponse()->redirect('.');
+    }
+
+    public function executeUdpateComments(HTTPRequest $request)
+    {
+        $this->page->addVar('title', 'Modification d\'un commentaire');
+
+        if ($request->postExists('pseudo'))
+        {
+            $comment = new \Entity\Comment([
+                'id' => $request->getData('id'),
+                'auteur' => $request->postData('pseudo'),
+                'contenu' => $request->postData('contenu')
+            ]);
+
+            if ($comment->isValid())
+            {
+                $this->managers->getManagerOf('Comments')->save($comment);
+
+                $this->app->user()->setFlash('Le commentaire a bien été modifié');
+
+                $this->app->httpResponse()->redirect('/news-' . $request->postData('news') . '.html');
+            }
+            else
+            {
+                $this->page->addVar('erreurs', $comment->errreurs());
+            }
+
+            $this->page->addVar('Comment', $comment);
+        }
+        else
+        {
+            $this->page->addVar('comment', $this->managers->getManagerOf('Comments')->get($request->getData('id')));
+        }
+    }
 }

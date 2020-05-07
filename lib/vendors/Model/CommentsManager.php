@@ -17,5 +17,9 @@ abstract class CommentsManager extends Manager
     }
 
     abstract public function getListOf($news);
+
+    abstract public function modify(Comment $comment);
+
+    abstract public function get($id);
 }
        
