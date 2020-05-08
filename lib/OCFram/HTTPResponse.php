@@ -13,7 +13,10 @@ class HTTPResponse extends ApplicationComponent
 
     public function redirect($location)
     {
-        header('Location:' . $location);
+        // var_dump($location);
+        // var_dump($this->app->user()->isAuthenticated());die;
+        header('Location: ' . $location);
+        exit;
     }
 
     public function redirect404()

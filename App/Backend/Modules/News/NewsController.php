@@ -71,13 +71,14 @@ class NewsController extends BackController
     public function executeDelete(HTTPRequest $request)
     {
         $this->managers->getManagerOf('News')->delete($request->getData(('id')));
+        $this->managers->getManagerOf('Comments')->deleteFromNews($request->getData(('id')));
 
         $this->app->user()->setFlash('La news a bien été supprimé');
 
         $this->app->httpResponse()->redirect('.');
     }
 
-    public function executeUdpateComments(HTTPRequest $request)
+    public function executeUdpateComment(HTTPRequest $request)
     {
         $this->page->addVar('title', 'Modification d\'un commentaire');
 
@@ -108,5 +109,14 @@ class NewsController extends BackController
         {
             $this->page->addVar('comment', $this->managers->getManagerOf('Comments')->get($request->getData('id')));
         }
+    }
+
+    public function ExecueDeleteComment(HTTPRequest $request)
+    {
+        $this->managers->getManagerOf('Comments')->delete($request->getData('id'));
+
+        $this->app->user()->setFlash('Le commentaire a bien été supprimé');
+
+        $this->app->httpResponse()->redirect('.');
     }
 }

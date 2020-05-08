@@ -21,5 +21,9 @@ abstract class CommentsManager extends Manager
     abstract public function modify(Comment $comment);
 
     abstract public function get($id);
+
+    abstract public function delete($id);
+
+    abstract public function deleteFromNews($newsId);
 }
        

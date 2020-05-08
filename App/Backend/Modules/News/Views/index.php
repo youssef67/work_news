@@ -18,5 +18,4 @@ foreach ($listeNews as $news)
         <td><a href="news-update-', $news['id'], '.html"><img src="/images/update.png" alt="Modifier" /></a> <a href="news-delete-', $news['id'], '.html"><img src="/images/delete.png" alt="Supprimer" /></a></td></tr>', "\n"; 
 }
 ?>
-
 </table>
