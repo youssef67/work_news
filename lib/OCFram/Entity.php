@@ -19,7 +19,7 @@ abstract class Entity implements \ArrayAccess
         return empty($this->id);
     }
 
-    public function errreurs()
+    public function erreurs()
     {
         return $this->erreurs;
     }
