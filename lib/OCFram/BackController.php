@@ -1,73 +1,72 @@
 <?php
-
 namespace OCFram;
-
+ 
 abstract class BackController extends ApplicationComponent
 {
-    protected $action = '';
-    protected $module = '';
-    protected $page = null;
-    protected $view = '';
-    protected $managers = null;
-
-    public function __construct(Application $app, $module, $action)
-    {   
-        parent::__construct($app);
-
-        $this->managers = new Managers('PDO', PDOFactory::getMysqlConnexion());
-        $this->page = new Page($app);
-
-        $this->setModule($module);
-        $this->setAction($action);
-        $this->setView($action);
-    }
-
-    public function execute()
+  protected $action = '';
+  protected $module = '';
+  protected $page = null;
+  protected $view = '';
+  protected $managers = null;
+ 
+  public function __construct(Application $app, $module, $action)
+  {
+    parent::__construct($app);
+ 
+    $this->managers = new Managers('PDO', PDOFactory::getMysqlConnexion());
+    $this->page = new Page($app);
+ 
+    $this->setModule($module);
+    $this->setAction($action);
+    $this->setView($action);
+  }
+ 
+  public function execute()
+  {
+    $method = 'execute'.ucfirst($this->action);
+ 
+    if (!is_callable([$this, $method]))
     {
-        $methode = 'execute' . ucfirst($this->action);
-
-        if (!is_callable([$this, $methode]))
-        {
-            throw new \InvalidArgumentException('L\'action "'. $this->action . '" n\'est pas définie sur ce module');
-        }
-
-        $this->$methode($this->app->httpRequest());
+      throw new \RuntimeException('L\'action "'.$this->action.'" n\'est pas définie sur ce module');
     }
-    
-    public function page()
+ 
+    $this->$method($this->app->httpRequest());
+  }
+ 
+  public function page()
+  {
+    return $this->page;
+  }
+ 
+  public function setModule($module)
+  {
+    if (!is_string($module) || empty($module))
     {
-        return $this->page;
+      throw new \InvalidArgumentException('Le module doit être une chaine de caractères valide');
     }
-
-    public function setModule($module)
+ 
+    $this->module = $module;
+  }
+ 
+  public function setAction($action)
+  {
+    if (!is_string($action) || empty($action))
     {
-        if (!is_string($module) || empty($module))
-        {
-            throw new \InvalidArgumentException('Le module doit être une chaine de caractères valide');
-        }
-
-        $this->module = $module;
+      throw new \InvalidArgumentException('L\'action doit être une chaine de caractères valide');
     }
-
-    public function setAction($action)
+ 
+    $this->action = $action;
+  }
+ 
+  public function setView($view)
+  {
+    if (!is_string($view) || empty($view))
     {
-        if (!is_string($action) || empty($action))
-        {
-            throw new \InvalidArgumentException('L\'action doit être une chaine de caractères valide');
-        }
-
-        $this->action = $action;
+      throw new \InvalidArgumentException('La vue doit être une chaine de caractères valide');
     }
-
-    public function setView($view)
-    {
-        if (!is_string($view) || empty($view))
-        {
-            throw new \InvalidArgumentException('La vue doit être une chaine de caractères valide');
-        }
-
-        $this->view = $view;
-
-        $this->page->setContentFile(__DIR__.'/../../App/'.$this->app->name().'/Modules/'.$this->module.'/Views/'.$this->view.'.php');
-    }
+ 
+    $this->view = $view;
+ 
+    $this->page->setContentFile(__DIR__.'/../../App/'.$this->app->name().'/Modules/'.$this->module.'/Views/'.$this->view.'.php');
+  }
 }

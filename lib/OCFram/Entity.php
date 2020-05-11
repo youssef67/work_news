@@ -1,77 +1,77 @@
 <?php
 namespace OCFram;
-
+ 
 abstract class Entity implements \ArrayAccess
 {
-    protected $erreurs = [],
-              $id;
-
-    public function __construct(array $donnees = [])
+  protected $erreurs = [],
+            $id;
+ 
+  public function __construct(array $donnees = [])
+  {
+    if (!empty($donnees))
     {
-        if (!empty($donnees))
-        {
-            $this->hydrate($donnees);
-        }
+      $this->hydrate($donnees);
     }
-
-    public function isNew()
+  }
+ 
+  public function isNew()
+  {
+    return empty($this->id);
+  }
+ 
+  public function erreurs()
+  {
+    return $this->erreurs;
+  }
+ 
+  public function id()
+  {
+    return $this->id;
+  }
+ 
+  public function setId($id)
+  {
+    $this->id = (int) $id;
+  }
+ 
+  public function hydrate(array $donnees)
+  {
+    foreach ($donnees as $attribut => $valeur)
     {
-        return empty($this->id);
+      $methode = 'set'.ucfirst($attribut);
+ 
+      if (is_callable([$this, $methode]))
+      {
+        $this->$methode($valeur);
+      }
     }
-
-    public function erreurs()
+  }
+ 
+  public function offsetGet($var)
+  {
+    if (isset($this->$var) && is_callable([$this, $var]))
     {
-        return $this->erreurs;
+      return $this->$var();
     }
-
-    public function id()
+  }
+ 
+  public function offsetSet($var, $value)
+  {
+    $method = 'set'.ucfirst($var);
+ 
+    if (isset($this->$var) && is_callable([$this, $method]))
     {
-        return $this->id();
+      $this->$method($value);
     }
-
-    public function setId($id)
-    {
-        $this->id = (int) $id;
-    }
-
-    public function hydrate(array $donnees)
-    {
-        foreach ($donnees as $attribut => $valeur)
-        {
-            $methode = 'set' . ucfirst($attribut);
-
-            if(is_callable([$this, $methode]))
-            {
-               $this->$methode($valeur); 
-            }
-        }
-    }
-
-    public function offsetGet($var)
-    {
-        if(isset($this->$var) && is_callable([$this, $var]))
-        {
-            return $this->$var();
-        }
-    }
-
-    public function offsetSet($var, $value)
-    {
-        $methode = 'set' . ucfirst($var);
-
-        if (isset($this->$var) && is_callable([$this, $methode]))
-        {
-            $this->$methode($value);
-        }
-    }
-
-    public function offsetExists($var)
-    {
-        return isset($var) && !is_callable([$this, $var]);
-    }
-
-    public function offsetUnset($var)
-    {
-        throw new \Exception('Impossible de supprimer une quelconque valeur');
-    }
+  }
+ 
+  public function offsetExists($var)
+  {
+    return isset($this->$var) && is_callable([$this, $var]);
+  }
+ 
+  public function offsetUnset($var)
+  {
+    throw new \Exception('Impossible de supprimer une quelconque valeur');
+  }
 }
