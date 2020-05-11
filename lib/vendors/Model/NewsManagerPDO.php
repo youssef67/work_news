@@ -9,7 +9,7 @@ class NewsManagerPDO extends NewsManager
     {
         $sql = 'SELECT id, auteur, titre, contenu, dateAjout, dateModif FROM news ORDER BY id DESC';
 
-        if ($debut != 1 || $limite != 1)
+        if ($debut != -1 || $limite != -1)
         {
             $sql .= ' LIMIT ' . (int) $limite . ' OFFSET ' . (int) $debut;
         }
