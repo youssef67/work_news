@@ -8,7 +8,7 @@ class Form
 
     public function __construct(Entity $entity)
     {
-        $this->setEntity($entity);
+       $this->setEntity($entity);
     }
 
     public function add(Field $field)
@@ -26,7 +26,7 @@ class Form
 
         foreach ($this->fields as $field)
         {
-            $view .= $field->buildWidget().'<br />'; 
+            $view .= $field->buildWidget().'<br />';
         }
 
         return $view;
